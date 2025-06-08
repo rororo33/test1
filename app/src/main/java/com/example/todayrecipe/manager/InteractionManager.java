@@ -82,7 +82,8 @@ public class InteractionManager {
                         int count = queryDocumentSnapshots.size();
 
                         for (var doc : queryDocumentSnapshots.getDocuments()) {
-                            Double rating = doc.getDouble("rating");
+                            // Double을 Float로 안전하게 변환
+                            Number rating = (Number) doc.get("rating");
                             if (rating != null) {
                                 totalRating += rating.floatValue();
                             }
@@ -90,10 +91,31 @@ public class InteractionManager {
 
                         float averageRating = totalRating / count;
 
+                        // 로그 추가
+                        android.util.Log.d("InteractionManager",
+                                "Recipe: " + recipeId +
+                                        ", Total ratings: " + count +
+                                        ", Average: " + averageRating);
+
                         // Update recipe with new average rating
                         db.collection("recipes").document(recipeId)
-                                .update("averageRating", averageRating, "ratingCount", count);
+                                .update(
+                                        "averageRating", averageRating,
+                                        "ratingCount", count
+                                )
+                                .addOnSuccessListener(aVoid -> {
+                                    android.util.Log.d("InteractionManager",
+                                            "Recipe rating updated successfully");
+                                })
+                                .addOnFailureListener(e -> {
+                                    android.util.Log.e("InteractionManager",
+                                            "Failed to update recipe rating: " + e.getMessage());
+                                });
                     }
+                })
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("InteractionManager",
+                            "Failed to fetch ratings: " + e.getMessage());
                 });
     }
 

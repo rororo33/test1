@@ -10,6 +10,8 @@ public class User {
     private String nickname;
     private String profileImage;
     private Date registrationDate;
+    private int followerCount = 0;  // 추가
+    private int followingCount = 0; // 추가
 
     public User() {
         // Firebase requires empty constructor
@@ -21,6 +23,8 @@ public class User {
         this.name = name;
         this.nickname = nickname;
         this.registrationDate = new Date();
+        this.followerCount = 0;  // 초기화
+        this.followingCount = 0; // 초기화
     }
 
     // Getters and Setters
@@ -78,5 +82,21 @@ public class User {
 
     public void setRegistrationDate(Date registrationDate) {
         this.registrationDate = registrationDate;
+    }
+
+    public int getFollowerCount() {
+        return followerCount;
+    }
+
+    public void setFollowerCount(int followerCount) {
+        this.followerCount = followerCount;
+    }
+
+    public int getFollowingCount() {
+        return followingCount;
+    }
+
+    public void setFollowingCount(int followingCount) {
+        this.followingCount = followingCount;
     }
 }

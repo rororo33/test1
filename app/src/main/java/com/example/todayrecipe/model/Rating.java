@@ -6,7 +6,7 @@ public class Rating {
     private String ratingId;
     private String recipeId;
     private String userId;
-    private int score;
+    private float score;  // int에서 float로 변경
     private String comment;
     private Date ratingDate;
 
@@ -14,7 +14,7 @@ public class Rating {
         // Firebase requires empty constructor
     }
 
-    public Rating(String recipeId, String userId, int score, String comment) {
+    public Rating(String recipeId, String userId, float score, String comment) {  // int에서 float로 변경
         this.recipeId = recipeId;
         this.userId = userId;
         this.score = score;
@@ -47,11 +47,11 @@ public class Rating {
         this.userId = userId;
     }
 
-    public int getScore() {
+    public float getScore() {  // int에서 float로 변경
         return score;
     }
 
-    public void setScore(int score) {
+    public void setScore(float score) {  // int에서 float로 변경
         this.score = score;
     }
 

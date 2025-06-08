@@ -64,24 +64,50 @@ public class RecipeManager {
     }
 
     public void getRecipeById(String recipeId, RecipeCallback callback) {
+        android.util.Log.d("RecipeManager", "Loading recipe: " + recipeId);
+
         db.collection("recipes")
                 .document(recipeId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> {
-                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                    if (recipe != null) {
-                        // Increment view count
-                        recipe.incrementViewCount();
-                        updateRecipe(recipe, success -> {
-                            if (success) {
-                                callback.onSuccess(recipe);
-                            }
-                        });
+                    if (documentSnapshot.exists()) {
+                        Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                        if (recipe != null) {
+
+                            recipe.setRecipeId(recipeId);
+
+                            // 디버깅 로그
+                            android.util.Log.d("RecipeManager", "Recipe title: " + recipe.getTitle());
+                            android.util.Log.d("RecipeManager", "Recipe description: " + recipe.getDescription());
+                            android.util.Log.d("RecipeManager", "Recipe category: " + recipe.getCategory());
+                            android.util.Log.d("RecipeManager", "Ingredients count: " +
+                                    (recipe.getIngredients() != null ? recipe.getIngredients().size() : 0));
+                            android.util.Log.d("RecipeManager", "Steps count: " +
+                                    (recipe.getCookingSteps() != null ? recipe.getCookingSteps().size() : 0));
+
+                            // 조회수 증가
+                            int newViewCount = recipe.getViewCount() + 1;
+                            recipe.setViewCount(newViewCount);
+
+                            // 비동기로 조회수 업데이트
+                            db.collection("recipes").document(recipeId)
+                                    .update("viewCount", newViewCount)
+                                    .addOnFailureListener(e -> {
+                                        android.util.Log.e("RecipeManager", "Failed to update view count: " + e.getMessage());
+                                    });
+
+                            callback.onSuccess(recipe);
+                        } else {
+                            callback.onFailure("레시피 데이터를 변환할 수 없습니다");
+                        }
                     } else {
                         callback.onFailure("레시피를 찾을 수 없습니다");
                     }
                 })
-                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+                .addOnFailureListener(e -> {
+                    android.util.Log.e("RecipeManager", "Error loading recipe: " + e.getMessage());
+                    callback.onFailure("레시피 로드 실패: " + e.getMessage());
+                });
     }
 
     public void getRecipesByUserId(String userId, RecipeListCallback callback) {
@@ -90,7 +116,14 @@ public class RecipeManager {
                 .orderBy("creationDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Recipe> recipes = queryDocumentSnapshots.toObjects(Recipe.class);
+                    List<Recipe> recipes = new ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        Recipe recipe = doc.toObject(Recipe.class);
+                        if (recipe != null) {
+                            recipe.setRecipeId(doc.getId());
+                            recipes.add(recipe);
+                        }
+                    });
                     callback.onSuccess(recipes);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
@@ -103,7 +136,14 @@ public class RecipeManager {
                 .whereLessThanOrEqualTo("title", keyword + "\uf8ff")
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Recipe> recipes = queryDocumentSnapshots.toObjects(Recipe.class);
+                    List<Recipe> recipes = new ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        Recipe recipe = doc.toObject(Recipe.class);
+                        if (recipe != null) {
+                            recipe.setRecipeId(doc.getId());
+                            recipes.add(recipe);
+                        }
+                    });
                     callback.onSuccess(recipes);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
@@ -115,7 +155,14 @@ public class RecipeManager {
                 .orderBy("creationDate", Query.Direction.DESCENDING)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Recipe> recipes = queryDocumentSnapshots.toObjects(Recipe.class);
+                    List<Recipe> recipes = new ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        Recipe recipe = doc.toObject(Recipe.class);
+                        if (recipe != null) {
+                            recipe.setRecipeId(doc.getId());
+                            recipes.add(recipe);
+                        }
+                    });
                     callback.onSuccess(recipes);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
@@ -128,7 +175,14 @@ public class RecipeManager {
                 .limit(5)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Recipe> recipes = queryDocumentSnapshots.toObjects(Recipe.class);
+                    List<Recipe> recipes = new ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        Recipe recipe = doc.toObject(Recipe.class);
+                        if (recipe != null) {
+                            recipe.setRecipeId(doc.getId());
+                            recipes.add(recipe);
+                        }
+                    });
                     callback.onSuccess(recipes);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));

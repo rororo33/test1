@@ -15,6 +15,7 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class BookmarkActivity extends AppCompatActivity implements RecipeAdapter.OnRecipeClickListener {
     private RecyclerView recyclerView;
@@ -66,23 +67,29 @@ public class BookmarkActivity extends AppCompatActivity implements RecipeAdapter
                 .addOnSuccessListener(queryDocumentSnapshots -> {
                     List<String> recipeIds = new ArrayList<>();
                     queryDocumentSnapshots.forEach(doc -> {
-                        recipeIds.add(doc.getString("recipeId"));
+                        String recipeId = doc.getString("recipeId");
+                        if (recipeId != null) {
+                            recipeIds.add(recipeId);
+                        }
                     });
 
                     if (recipeIds.isEmpty()) {
                         emptyText.setVisibility(android.view.View.VISIBLE);
                         recyclerView.setVisibility(android.view.View.GONE);
                     } else {
+                        emptyText.setVisibility(android.view.View.GONE);
+                        recyclerView.setVisibility(android.view.View.VISIBLE);
                         loadRecipes(recipeIds);
                     }
                 })
                 .addOnFailureListener(e -> {
-                    Toast.makeText(this, "북마크 로드 실패", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "북마크 로드 실패: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 });
     }
 
     private void loadRecipes(List<String> recipeIds) {
         List<Recipe> recipes = new ArrayList<>();
+        AtomicInteger loadedCount = new AtomicInteger(0);
 
         for (String recipeId : recipeIds) {
             db.collection("recipes")
@@ -91,7 +98,19 @@ public class BookmarkActivity extends AppCompatActivity implements RecipeAdapter
                     .addOnSuccessListener(documentSnapshot -> {
                         Recipe recipe = documentSnapshot.toObject(Recipe.class);
                         if (recipe != null) {
+                            recipe.setRecipeId(documentSnapshot.getId()); // ID 설정
                             recipes.add(recipe);
+                        }
+
+                        // 모든 레시피를 로드했는지 확인
+                        if (loadedCount.incrementAndGet() == recipeIds.size()) {
+                            // 모든 레시피가 로드되면 한 번에 업데이트
+                            adapter.updateRecipes(recipes);
+                        }
+                    })
+                    .addOnFailureListener(e -> {
+                        // 실패해도 카운트 증가
+                        if (loadedCount.incrementAndGet() == recipeIds.size()) {
                             adapter.updateRecipes(recipes);
                         }
                     });
