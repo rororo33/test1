@@ -1,11 +1,13 @@
 package com.example.todayrecipe;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RadioGroup;
 import android.widget.RatingBar;
 import android.widget.TextView;
@@ -32,6 +34,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
     private ImageView recipeImage;
     private TextView titleText, categoryText, cookingTimeText, difficultyText, servingsText;
     private TextView descriptionText;
+    private TextView authorNameText;  // 추가
+    private LinearLayout authorLayout;  // 추가
     private RatingBar ratingBar;
     private TextView ratingText;
     private RecyclerView ingredientsRecyclerView, stepsRecyclerView, commentsRecyclerView;
@@ -80,6 +84,8 @@ public class RecipeDetailActivity extends AppCompatActivity {
         difficultyText = findViewById(R.id.difficultyText);
         servingsText = findViewById(R.id.servingsText);
         descriptionText = findViewById(R.id.descriptionText);
+        authorNameText = findViewById(R.id.authorNameText);  // 추가
+        authorLayout = findViewById(R.id.authorLayout);  // 추가
         ratingBar = findViewById(R.id.ratingBar);
         ratingText = findViewById(R.id.ratingText);
         ingredientsRecyclerView = findViewById(R.id.ingredientsRecyclerView);
@@ -173,6 +179,27 @@ public class RecipeDetailActivity extends AppCompatActivity {
             CookingStepAdapter stepAdapter = new CookingStepAdapter(currentRecipe.getCookingSteps());
             stepsRecyclerView.setAdapter(stepAdapter);
         }
+
+        // 작성자 정보 로드 및 클릭 이벤트 추가
+        userManager.getUserById(currentRecipe.getUserId(), new UserManager.UserCallback() {
+            @Override
+            public void onSuccess(com.example.todayrecipe.model.User user) {
+                authorNameText.setText("by " + user.getNickname());
+                authorLayout.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(RecipeDetailActivity.this, UserProfileActivity.class);
+                        intent.putExtra("userId", currentRecipe.getUserId());
+                        startActivity(intent);
+                    }
+                });
+            }
+
+            @Override
+            public void onFailure(String error) {
+                authorNameText.setText("by 알 수 없음");
+            }
+        });
     }
 
     private void checkBookmarkStatus() {

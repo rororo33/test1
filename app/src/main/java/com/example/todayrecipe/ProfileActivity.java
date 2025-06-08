@@ -48,6 +48,36 @@ public class ProfileActivity extends AppCompatActivity implements RecipeAdapter.
         loadUserInfo();
         loadMyRecipes();
         setupListeners();
+
+        // 팔로워/팔로잉 수 표시 추가
+        TextView followerCountText = findViewById(R.id.followerCountText);
+        TextView followingCountText = findViewById(R.id.followingCountText);
+
+        // 팔로워 수 클릭 시 팔로워 목록 보기
+        if (followerCountText != null) {
+            followerCountText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, FollowListActivity.class);
+                    intent.putExtra("userId", userManager.getCurrentUser().getUid());
+                    intent.putExtra("type", "followers");
+                    startActivity(intent);
+                }
+            });
+        }
+
+        // 팔로잉 수 클릭 시 팔로잉 목록 보기
+        if (followingCountText != null) {
+            followingCountText.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(ProfileActivity.this, FollowListActivity.class);
+                    intent.putExtra("userId", userManager.getCurrentUser().getUid());
+                    intent.putExtra("type", "following");
+                    startActivity(intent);
+                }
+            });
+        }
     }
 
     private void initViews() {
@@ -73,6 +103,16 @@ public class ProfileActivity extends AppCompatActivity implements RecipeAdapter.
                 public void onSuccess(User user) {
                     nameText.setText("이름: " + user.getName());
                     nicknameText.setText("닉네임: " + user.getNickname());
+
+                    // 팔로워/팔로잉 수 표시
+                    TextView followerCountText = findViewById(R.id.followerCountText);
+                    TextView followingCountText = findViewById(R.id.followingCountText);
+                    if (followerCountText != null) {
+                        followerCountText.setText("팔로워 " + user.getFollowerCount());
+                    }
+                    if (followingCountText != null) {
+                        followingCountText.setText("팔로잉 " + user.getFollowingCount());
+                    }
                 }
 
                 @Override
@@ -192,5 +232,12 @@ public class ProfileActivity extends AppCompatActivity implements RecipeAdapter.
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 팔로워/팔로잉 수가 변경되었을 수 있으므로 다시 로드
+        loadUserInfo();
     }
 }

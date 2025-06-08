@@ -25,7 +25,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".UserProfileActivity"
+            android:label="프로필" />
 
+        <activity
+            android:name=".FollowListActivity"
+            android:label="팔로우 목록" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegisterActivity" />
         <activity android:name=".HomeActivity" />
