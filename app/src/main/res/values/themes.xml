@@ -1,5 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Base application theme -->
+    <style name="Theme.TodayRecipe" parent="Theme.MaterialComponents.Light.DarkActionBar">
+        <!-- Primary brand color -->
+        <item name="colorPrimary">#6D4C41</item>
+        <item name="colorPrimaryVariant">#5D4037</item>
+        <item name="colorOnPrimary">@color/white</item>
+        <!-- Secondary brand color -->
+        <item name="colorSecondary">#FFE082</item>
+        <item name="colorSecondaryVariant">#FFCA28</item>
+        <item name="colorOnSecondary">@color/black</item>
+        <!-- Status bar color -->
+        <item name="android:statusBarColor">#5D4037</item>
+        <!-- Customize your theme here -->
+    </style>
 
-    <style name="Theme.MyApplication" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="Theme.TodayRecipe.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
 </resources>

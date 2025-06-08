@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:layout_marginBottom="10dp">
+
+    <EditText
+        android:id="@+id/stepNumberEditText"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:hint="1"
+        android:inputType="number"
+        android:gravity="center"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginEnd="10dp"
+        android:enabled="false" />
+
+    <EditText
+        android:id="@+id/stepDescriptionEditText"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:hint="조리 단계를 설명해주세요"
+        android:inputType="textMultiLine"
+        android:minLines="2"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_background"
+        android:layout_marginEnd="5dp" />
+
+    <Button
+        android:id="@+id/removeStepButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제"
+        android:minWidth="0dp"
+        android:minHeight="0dp"
+        android:padding="10dp" />
+
+</LinearLayout>

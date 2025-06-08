@@ -56,7 +56,8 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/popularRecyclerView"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:nestedScrollingEnabled="false" />
 
             </LinearLayout>
         </ScrollView>
@@ -74,8 +75,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_add"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="80dp"
+        android:src="@android:drawable/ic_input_add"
+        app:tint="@android:color/white"
         app:backgroundTint="#6D4C41" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

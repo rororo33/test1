@@ -11,9 +11,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="50dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="50dp"
         android:text="로그인"
-        android:textSize="28sp"
+        android:textSize="32sp"
         android:textStyle="bold"
         android:textColor="#6D4C41" />
 
@@ -31,7 +31,7 @@
         android:id="@+id/passwordEditText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="20dp"
+        android:layout_marginBottom="30dp"
         android:hint="비밀번호를 입력하세요"
         android:inputType="textPassword"
         android:padding="15dp"
@@ -41,19 +41,12 @@
         android:id="@+id/loginButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="15dp"
+        android:layout_marginBottom="20dp"
         android:text="로그인"
         android:textSize="16sp"
         android:textColor="@android:color/white"
-        android:background="@drawable/button_background" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:layout_marginBottom="10dp"
-        android:text="비밀번호 찾기"
-        android:textColor="#795548" />
+        android:backgroundTint="#6D4C41"
+        android:padding="15dp" />
 
     <TextView
         android:id="@+id/registerLink"
@@ -61,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:text="아직 회원이 아니신가요? 회원가입"
-        android:textColor="#795548" />
+        android:textColor="#795548"
+        android:textSize="16sp" />
 
 </LinearLayout>

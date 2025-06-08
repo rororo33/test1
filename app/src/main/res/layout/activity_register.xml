@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#FFE082">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:layout_marginBottom="40dp"
+            android:text="회원가입"
+            android:textSize="32sp"
+            android:textStyle="bold"
+            android:textColor="#6D4C41" />
+
+        <EditText
+            android:id="@+id/nameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:hint="이름"
+            android:inputType="textPersonName"
+            android:padding="15dp"
+            android:background="@drawable/edit_text_background" />
+
+        <EditText
+            android:id="@+id/emailEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:hint="이메일 주소"
+            android:inputType="textEmailAddress"
+            android:padding="15dp"
+            android:background="@drawable/edit_text_background" />
+
+        <EditText
+            android:id="@+id/nicknameEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:hint="닉네임"
+            android:inputType="text"
+            android:padding="15dp"
+            android:background="@drawable/edit_text_background" />
+
+        <EditText
+            android:id="@+id/passwordEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="15dp"
+            android:hint="비밀번호 (6자 이상)"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:background="@drawable/edit_text_background" />
+
+        <EditText
+            android:id="@+id/passwordConfirmEditText"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="30dp"
+            android:hint="비밀번호 확인"
+            android:inputType="textPassword"
+            android:padding="15dp"
+            android:background="@drawable/edit_text_background" />
+
+        <Button
+            android:id="@+id/registerButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="회원가입"
+            android:textSize="16sp"
+            android:textColor="@android:color/white"
+            android:backgroundTint="#6D4C41"
+            android:padding="15dp" />
+
+    </LinearLayout>
+</ScrollView>

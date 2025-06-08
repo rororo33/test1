@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="20dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="신고 사유를 선택해주세요"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="20dp" />
+
+    <RadioGroup
+        android:id="@+id/reasonRadioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="20dp">
+
+        <RadioButton
+            android:id="@+id/radioInappropriate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="부적절한 콘텐츠"
+            android:checked="true" />
+
+        <RadioButton
+            android:id="@+id/radioSpam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="스팸/광고" />
+
+        <RadioButton
+            android:id="@+id/radioCopyright"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="저작권 침해" />
+
+        <RadioButton
+            android:id="@+id/radioOther"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="기타" />
+
+    </RadioGroup>
+
+    <EditText
+        android:id="@+id/descriptionEditText"
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:hint="상세 설명을 입력해주세요"
+        android:inputType="textMultiLine"
+        android:gravity="top"
+        android:padding="10dp"
+        android:background="@drawable/edit_text_background" />
+
+</LinearLayout>
