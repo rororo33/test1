@@ -47,9 +47,11 @@ public class InteractionManager {
         Map<String, Object> ratingData = new HashMap<>();
         ratingData.put("userId", userId);
         ratingData.put("recipeId", recipeId);
-        ratingData.put("rating", rating);
+        ratingData.put("score", rating);
         ratingData.put("comment", comment);
-        ratingData.put("timestamp", FieldValue.serverTimestamp());
+        ratingData.put("ratingDate", FieldValue.serverTimestamp());
+
+        android.util.Log.d("InteractionManager", "Adding rating: " + rating + " for recipe: " + recipeId);
 
         // Check if user already rated
         db.collection("ratings")
@@ -61,10 +63,14 @@ public class InteractionManager {
                         // Add new rating
                         db.collection("ratings").add(ratingData)
                                 .addOnSuccessListener(documentReference -> {
+                                    android.util.Log.d("InteractionManager", "Rating added successfully");
                                     updateRecipeRating(recipeId);
                                     callback.onComplete(true);
                                 })
-                                .addOnFailureListener(e -> callback.onComplete(false));
+                                .addOnFailureListener(e -> {
+                                    android.util.Log.e("InteractionManager", "Failed to add rating: " + e.getMessage());
+                                    callback.onComplete(false);
+                                });
                     } else {
                         callback.onComplete(false); // Already rated
                     }
@@ -82,20 +88,19 @@ public class InteractionManager {
                         int count = queryDocumentSnapshots.size();
 
                         for (var doc : queryDocumentSnapshots.getDocuments()) {
-                            // Double을 Float로 안전하게 변환
-                            Number rating = (Number) doc.get("rating");
-                            if (rating != null) {
-                                totalRating += rating.floatValue();
+                            // 중요: "score" 필드 사용
+                            Number score = (Number) doc.get("score");
+                            if (score != null) {
+                                totalRating += score.floatValue();
                             }
                         }
 
                         float averageRating = totalRating / count;
 
-                        // 로그 추가
                         android.util.Log.d("InteractionManager",
-                                "Recipe: " + recipeId +
-                                        ", Total ratings: " + count +
-                                        ", Average: " + averageRating);
+                                "Updating recipe " + recipeId +
+                                        ": count=" + count +
+                                        ", average=" + averageRating);
 
                         // Update recipe with new average rating
                         db.collection("recipes").document(recipeId)
