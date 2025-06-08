@@ -105,7 +105,7 @@ public class SearchEngine {
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
 
-    // 고급 검색 (여러 조건 조합)
+    // 고급 검색
     public void advancedSearch(String keyword, String category, String difficulty,
                                Integer maxCookingTime, Float minRating, SearchCallback callback) {
         Query query = db.collection("recipes");

@@ -30,7 +30,7 @@ public class BookmarkActivity extends AppCompatActivity implements RecipeAdapter
 
         setTitle("북마크한 레시피");
 
-        // 뒤로가기 버튼 활성화
+        // 뒤로가기 버튼
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         }

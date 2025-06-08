@@ -225,7 +225,7 @@ public class RecipeDetailActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(android.view.MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
-            finish(); // 현재 액티비티 종료 (이전 화면으로 돌아감)
+            finish(); // 현재 액티비티 종료
             return true;
         }
         return super.onOptionsItemSelected(item);
