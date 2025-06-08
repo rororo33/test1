@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "889313402384",
+    "project_id": "todayrecipe-7603f",
+    "storage_bucket": "todayrecipe-7603f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:889313402384:android:1168139faba58b5b277495",
+        "android_client_info": {
+          "package_name": "com.example.todayrecipe"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDbCGiZWTgr5MpnoI9uXIn1NkI7zbngwjs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

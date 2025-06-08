@@ -129,6 +129,22 @@ public class InteractionManager {
 
         db.collection("bookmarks")
                 .document(bookmarkId)
+                .delete()
+                .addOnSuccessListener(aVoid -> callback.onComplete(true))
+                .addOnFailureListener(e -> callback.onComplete(false));
+    }
+
+    public void isBookmarked(String recipeId, BooleanCallback callback) {
+        if (auth.getCurrentUser() == null) {
+            callback.onComplete(false);
+            return;
+        }
+
+        String userId = auth.getCurrentUser().getUid();
+        String bookmarkId = userId + "_" + recipeId;
+
+        db.collection("bookmarks")
+                .document(bookmarkId)
                 .get()
                 .addOnSuccessListener(documentSnapshot -> callback.onComplete(documentSnapshot.exists()))
                 .addOnFailureListener(e -> callback.onComplete(false));
@@ -177,7 +193,10 @@ public class InteractionManager {
         db.collection("follows")
                 .document(followId)
                 .set(followData)
-                .addOnSuccessListener(aVoid -> callback.onComplete(true))
+                .addOnSuccessListener(aVoid -> {
+                    updateFollowCounts(currentUserId, targetUserId, true);
+                    callback.onComplete(true);
+                })
                 .addOnFailureListener(e -> callback.onComplete(false));
     }
 
@@ -193,7 +212,10 @@ public class InteractionManager {
         db.collection("follows")
                 .document(followId)
                 .delete()
-                .addOnSuccessListener(aVoid -> callback.onComplete(true))
+                .addOnSuccessListener(aVoid -> {
+                    updateFollowCounts(currentUserId, targetUserId, false);
+                    callback.onComplete(true);
+                })
                 .addOnFailureListener(e -> callback.onComplete(false));
     }
 
@@ -212,20 +234,70 @@ public class InteractionManager {
                 .addOnSuccessListener(documentSnapshot -> callback.onComplete(documentSnapshot.exists()))
                 .addOnFailureListener(e -> callback.onComplete(false));
     }
-}
 
-        db.collection("bookmarks")
-                .document(bookmarkId)
-                .delete()
-                .addOnSuccessListener(aVoid -> callback.onComplete(true))
-        .addOnFailureListener(e -> callback.onComplete(false));
-        }
+    private void updateFollowCounts(String followerId, String followingId, boolean isFollowing) {
+        int increment = isFollowing ? 1 : -1;
 
-public void isBookmarked(String recipeId, BooleanCallback callback) {
-    if (auth.getCurrentUser() == null) {
-        callback.onComplete(false);
-        return;
+        // Update follower's following count
+        db.collection("users").document(followerId)
+                .update("followingCount", FieldValue.increment(increment));
+
+        // Update target user's follower count
+        db.collection("users").document(followingId)
+                .update("followerCount", FieldValue.increment(increment));
     }
 
-    String userId = auth.getCurrentUser().getUid();
-    String bookmarkId = userId + "_" + recipeId;
+    // Get user's bookmarked recipes
+    public void getBookmarkedRecipeIds(String userId, ListCallback callback) {
+        db.collection("bookmarks")
+                .whereEqualTo("userId", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> recipeIds = new java.util.ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        String recipeId = doc.getString("recipeId");
+                        if (recipeId != null) {
+                            recipeIds.add(recipeId);
+                        }
+                    });
+                    callback.onSuccess(recipeIds);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get user's followers
+    public void getFollowers(String userId, ListCallback callback) {
+        db.collection("follows")
+                .whereEqualTo("followingId", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> followerIds = new java.util.ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        String followerId = doc.getString("followerId");
+                        if (followerId != null) {
+                            followerIds.add(followerId);
+                        }
+                    });
+                    callback.onSuccess(followerIds);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+
+    // Get user's following
+    public void getFollowing(String userId, ListCallback callback) {
+        db.collection("follows")
+                .whereEqualTo("followerId", userId)
+                .get()
+                .addOnSuccessListener(queryDocumentSnapshots -> {
+                    List<String> followingIds = new java.util.ArrayList<>();
+                    queryDocumentSnapshots.forEach(doc -> {
+                        String followingId = doc.getString("followingId");
+                        if (followingId != null) {
+                            followingIds.add(followingId);
+                        }
+                    });
+                    callback.onSuccess(followingIds);
+                })
+                .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
+    }
+}

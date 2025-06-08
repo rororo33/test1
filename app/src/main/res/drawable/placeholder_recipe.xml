@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- 배경 -->
+    <item>
+        <shape android:shape="rectangle">
+            <solid android:color="#F0F0F0"/>
+        </shape>
+    </item>
+
+    <!-- 중앙 아이콘 -->
+    <item
+        android:width="48dp"
+        android:height="48dp"
+        android:gravity="center">
+        <shape android:shape="rectangle">
+            <solid android:color="#CCCCCC"/>
+            <corners android:radius="4dp"/>
+        </shape>
+    </item>
+
+    <!-- 또는 기본 아이콘 사용 -->
+    <item
+        android:drawable="@android:drawable/ic_menu_gallery"
+        android:width="48dp"
+        android:height="48dp"
+        android:gravity="center"/>
+</layer-list>

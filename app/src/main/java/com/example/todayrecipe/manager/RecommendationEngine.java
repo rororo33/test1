@@ -1,5 +1,6 @@
 package com.example.todayrecipe.manager;
 
+import java.util.concurrent.CopyOnWriteArrayList;
 import com.example.todayrecipe.model.Recipe;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -92,7 +93,9 @@ public class RecommendationEngine {
                 .limit(10)
                 .get()
                 .addOnSuccessListener(queryDocumentSnapshots -> {
-                    List<Recipe> recipes = new ArrayList<>();
+                    // CopyOnWriteArrayList 사용하여 thread-safe 보장
+                    List<Recipe> recipes = new CopyOnWriteArrayList<>();
+
                     queryDocumentSnapshots.forEach(doc -> {
                         Recipe recipe = doc.toObject(Recipe.class);
                         if (recipe != null && !excludeIds.contains(recipe.getRecipeId())) {
@@ -101,12 +104,13 @@ public class RecommendationEngine {
                     });
 
                     // 랜덤하게 섞어서 5개만 반환
-                    Collections.shuffle(recipes);
-                    if (recipes.size() > 5) {
-                        recipes = recipes.subList(0, 5);
+                    List<Recipe> finalRecipes = new ArrayList<>(recipes);
+                    Collections.shuffle(finalRecipes);
+                    if (finalRecipes.size() > 5) {
+                        finalRecipes = finalRecipes.subList(0, 5);
                     }
 
-                    callback.onSuccess(recipes);
+                    callback.onSuccess(finalRecipes);
                 })
                 .addOnFailureListener(e -> callback.onFailure(e.getMessage()));
     }
