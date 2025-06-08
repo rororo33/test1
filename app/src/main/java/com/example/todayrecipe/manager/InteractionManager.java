@@ -265,13 +265,41 @@ public class InteractionManager {
     private void updateFollowCounts(String followerId, String followingId, boolean isFollowing) {
         int increment = isFollowing ? 1 : -1;
 
-        // Update follower's following count
+        // 팔로워의 팔로잉 수 업데이트
         db.collection("users").document(followerId)
-                .update("followingCount", FieldValue.increment(increment));
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Long currentFollowing = documentSnapshot.getLong("followingCount");
+                    if (currentFollowing == null) currentFollowing = 0L;
 
-        // Update target user's follower count
+                    long newCount = Math.max(0, currentFollowing + increment);
+                    db.collection("users").document(followerId)
+                            .update("followingCount", newCount)
+                            .addOnFailureListener(e -> {
+                                android.util.Log.e("InteractionManager",
+                                        "Failed to update followingCount: " + e.getMessage());
+                            });
+                });
+
+        // 대상 사용자의 팔로워 수 업데이트
         db.collection("users").document(followingId)
-                .update("followerCount", FieldValue.increment(increment));
+                .get()
+                .addOnSuccessListener(documentSnapshot -> {
+                    Long currentFollowers = documentSnapshot.getLong("followerCount");
+                    if (currentFollowers == null) currentFollowers = 0L;
+
+                    long newCount = Math.max(0, currentFollowers + increment);
+                    db.collection("users").document(followingId)
+                            .update("followerCount", newCount)
+                            .addOnSuccessListener(aVoid -> {
+                                android.util.Log.d("InteractionManager",
+                                        "Updated followerCount to: " + newCount);
+                            })
+                            .addOnFailureListener(e -> {
+                                android.util.Log.e("InteractionManager",
+                                        "Failed to update followerCount: " + e.getMessage());
+                            });
+                });
     }
 
     // Get user's bookmarked recipes

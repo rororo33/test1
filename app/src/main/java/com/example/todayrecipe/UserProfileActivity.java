@@ -17,6 +17,7 @@ import com.example.todayrecipe.model.Recipe;
 import com.example.todayrecipe.model.User;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,8 +125,19 @@ public class UserProfileActivity extends AppCompatActivity implements RecipeAdap
                 setTitle(user.getNickname() + "님의 프로필");
                 nameText.setText(user.getName());
                 nicknameText.setText("@" + user.getNickname());
-                followerCountText.setText("팔로워 " + user.getFollowerCount());
-                followingCountText.setText("팔로잉 " + user.getFollowingCount());
+
+                // Firestore에서 직접 최신 팔로워/팔로잉 수 가져오기
+                FirebaseFirestore.getInstance()
+                        .collection("users")
+                        .document(targetUserId)
+                        .get()
+                        .addOnSuccessListener(doc -> {
+                            Long followerCount = doc.getLong("followerCount");
+                            Long followingCount = doc.getLong("followingCount");
+
+                            followerCountText.setText("팔로워 " + (followerCount != null ? followerCount : 0));
+                            followingCountText.setText("팔로잉 " + (followingCount != null ? followingCount : 0));
+                        });
             }
 
             @Override
@@ -189,8 +201,8 @@ public class UserProfileActivity extends AppCompatActivity implements RecipeAdap
                         isFollowing = false;
                         updateFollowButton();
                         Toast.makeText(UserProfileActivity.this, "팔로우를 취소했습니다", Toast.LENGTH_SHORT).show();
-                        // 팔로워 수 업데이트
-                        loadUserInfo();
+                        // 팔로워 수 업데이트 - 약간의 지연 후 실행
+                        followButton.postDelayed(() -> loadUserInfo(), 500);
                     } else {
                         Toast.makeText(UserProfileActivity.this, "팔로우 취소에 실패했습니다", Toast.LENGTH_SHORT).show();
                     }
@@ -205,8 +217,8 @@ public class UserProfileActivity extends AppCompatActivity implements RecipeAdap
                         isFollowing = true;
                         updateFollowButton();
                         Toast.makeText(UserProfileActivity.this, "팔로우했습니다", Toast.LENGTH_SHORT).show();
-                        // 팔로워 수 업데이트
-                        loadUserInfo();
+                        // 팔로워 수 업데이트 - 약간의 지연 후 실행
+                        followButton.postDelayed(() -> loadUserInfo(), 500);
                     } else {
                         Toast.makeText(UserProfileActivity.this, "팔로우에 실패했습니다", Toast.LENGTH_SHORT).show();
                     }
@@ -239,5 +251,37 @@ public class UserProfileActivity extends AppCompatActivity implements RecipeAdap
             checkFollowStatus();
             loadUserInfo();
         }
+        // 실제 팔로워/팔로잉 수 다시 계산
+        recalculateFollowCounts();
+    }
+
+    private void recalculateFollowCounts() {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // 팔로워 수 계산
+        db.collection("follows")
+                .whereEqualTo("followingId", targetUserId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int followerCount = querySnapshot.size();
+                    db.collection("users").document(targetUserId)
+                            .update("followerCount", followerCount)
+                            .addOnSuccessListener(aVoid -> {
+                                followerCountText.setText("팔로워 " + followerCount);
+                            });
+                });
+
+        // 팔로잉 수 계산
+        db.collection("follows")
+                .whereEqualTo("followerId", targetUserId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int followingCount = querySnapshot.size();
+                    db.collection("users").document(targetUserId)
+                            .update("followingCount", followingCount)
+                            .addOnSuccessListener(aVoid -> {
+                                followingCountText.setText("팔로잉 " + followingCount);
+                            });
+                });
     }
 }

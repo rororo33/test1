@@ -18,6 +18,7 @@ import com.example.todayrecipe.manager.UserManager;
 import com.example.todayrecipe.model.Recipe;
 import com.example.todayrecipe.model.User;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -239,5 +240,46 @@ public class ProfileActivity extends AppCompatActivity implements RecipeAdapter.
         super.onResume();
         // 팔로워/팔로잉 수가 변경되었을 수 있으므로 다시 로드
         loadUserInfo();
+        recalculateMyFollowCounts();
+    }
+
+    private void recalculateMyFollowCounts() {
+        FirebaseUser currentUser = userManager.getCurrentUser();
+        if (currentUser == null) return;
+
+        String userId = currentUser.getUid();
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // 팔로워 수 계산
+        db.collection("follows")
+                .whereEqualTo("followingId", userId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int followerCount = querySnapshot.size();
+                    db.collection("users").document(userId)
+                            .update("followerCount", followerCount)
+                            .addOnSuccessListener(aVoid -> {
+                                TextView followerCountText = findViewById(R.id.followerCountText);
+                                if (followerCountText != null) {
+                                    followerCountText.setText("팔로워 " + followerCount);
+                                }
+                            });
+                });
+
+        // 팔로잉 수 계산
+        db.collection("follows")
+                .whereEqualTo("followerId", userId)
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    int followingCount = querySnapshot.size();
+                    db.collection("users").document(userId)
+                            .update("followingCount", followingCount)
+                            .addOnSuccessListener(aVoid -> {
+                                TextView followingCountText = findViewById(R.id.followingCountText);
+                                if (followingCountText != null) {
+                                    followingCountText.setText("팔로잉 " + followingCount);
+                                }
+                            });
+                });
     }
 }

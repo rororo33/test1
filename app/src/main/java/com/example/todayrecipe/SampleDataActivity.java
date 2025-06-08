@@ -51,12 +51,28 @@ public class SampleDataActivity extends AppCompatActivity {
 
     private void addSampleUsers() {
         // 사용자 1
-        User user1 = new User("sampleUser1", "user1@example.com", "김철수", "요리왕철수");
-        db.collection("users").document("sampleUser1").set(user1);
+        Map<String, Object> user1Data = new HashMap<>();
+        user1Data.put("userId", "sampleUser1");
+        user1Data.put("email", "user1@example.com");
+        user1Data.put("name", "김철수");
+        user1Data.put("nickname", "요리왕철수");
+        user1Data.put("registrationDate", new Date());
+        user1Data.put("followerCount", 0);
+        user1Data.put("followingCount", 0);
+
+        db.collection("users").document("sampleUser1").set(user1Data);
 
         // 사용자 2
-        User user2 = new User("sampleUser2", "user2@example.com", "이영희", "영희의주방");
-        db.collection("users").document("sampleUser2").set(user2);
+        Map<String, Object> user2Data = new HashMap<>();
+        user2Data.put("userId", "sampleUser2");
+        user2Data.put("email", "user2@example.com");
+        user2Data.put("name", "이영희");
+        user2Data.put("nickname", "영희의주방");
+        user2Data.put("registrationDate", new Date());
+        user2Data.put("followerCount", 0);
+        user2Data.put("followingCount", 0);
+
+        db.collection("users").document("sampleUser2").set(user2Data);
     }
 
     private void addSampleRecipes() {

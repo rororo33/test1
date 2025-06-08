@@ -8,6 +8,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.HashMap;
+import java.util.Map;
 
 public class UserManager {
     private static UserManager instance;
@@ -55,9 +57,18 @@ public class UserManager {
     }
 
     private void saveUserToFirestore(User user, AuthCallback callback) {
+        Map<String, Object> userData = new HashMap<>();
+        userData.put("userId", user.getUserId());
+        userData.put("email", user.getEmail());
+        userData.put("name", user.getName());
+        userData.put("nickname", user.getNickname());
+        userData.put("registrationDate", user.getRegistrationDate());
+        userData.put("followerCount", 0);
+        userData.put("followingCount", 0);
+
         db.collection("users")
                 .document(user.getUserId())
-                .set(user)
+                .set(userData)
                 .addOnSuccessListener(aVoid -> callback.onSuccess())
                 .addOnFailureListener(e -> callback.onFailure("사용자 정보 저장 실패: " + e.getMessage()));
     }
@@ -105,6 +116,26 @@ public class UserManager {
                 .addOnSuccessListener(documentSnapshot -> {
                     User user = documentSnapshot.toObject(User.class);
                     if (user != null) {
+                        // 팔로워/팔로잉 카운트가 null인 경우 0으로 초기화
+                        boolean needsUpdate = false;
+                        Map<String, Object> updates = new HashMap<>();
+
+                        if (documentSnapshot.getLong("followerCount") == null) {
+                            updates.put("followerCount", 0);
+                            user.setFollowerCount(0);
+                            needsUpdate = true;
+                        }
+
+                        if (documentSnapshot.getLong("followingCount") == null) {
+                            updates.put("followingCount", 0);
+                            user.setFollowingCount(0);
+                            needsUpdate = true;
+                        }
+
+                        if (needsUpdate) {
+                            db.collection("users").document(userId).update(updates);
+                        }
+
                         callback.onSuccess(user);
                     } else {
                         callback.onFailure("사용자를 찾을 수 없습니다");
