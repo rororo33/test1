@@ -36,6 +36,11 @@ public class ProfileActivity extends AppCompatActivity implements RecipeAdapter.
 
         setTitle("마이페이지");
 
+        // 뒤로가기 버튼 활성화
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         userManager = UserManager.getInstance();
         recipeManager = RecipeManager.getInstance();
 
@@ -178,5 +183,14 @@ public class ProfileActivity extends AppCompatActivity implements RecipeAdapter.
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra("recipeId", recipe.getRecipeId());
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // 현재 액티비티 종료 (이전 화면으로 돌아감)
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

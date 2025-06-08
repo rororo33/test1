@@ -33,6 +33,11 @@ public class RecipeEditActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_recipe_edit);
 
+        // 뒤로가기 버튼 활성화
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         recipeManager = RecipeManager.getInstance();
         recipeId = getIntent().getStringExtra("recipeId");
 
@@ -47,6 +52,15 @@ public class RecipeEditActivity extends AppCompatActivity {
         }
 
         setupListeners();
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // 현재 액티비티 종료 (이전 화면으로 돌아감)
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void initViews() {

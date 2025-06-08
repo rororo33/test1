@@ -51,7 +51,7 @@
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:hint="상세 설명을 입력해주세요"
-        android:inputType="textMultiLine"
+        android:inputType="text|textMultiLine"
         android:gravity="top"
         android:padding="10dp"
         android:background="@drawable/edit_text_background" />

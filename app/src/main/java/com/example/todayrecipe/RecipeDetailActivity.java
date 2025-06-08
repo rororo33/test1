@@ -57,6 +57,11 @@ public class RecipeDetailActivity extends AppCompatActivity {
             return;
         }
 
+        // 뒤로가기 버튼 활성화
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         recipeManager = RecipeManager.getInstance();
         interactionManager = InteractionManager.getInstance();
         userManager = UserManager.getInstance();
@@ -215,6 +220,15 @@ public class RecipeDetailActivity extends AppCompatActivity {
                 }
             });
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // 현재 액티비티 종료 (이전 화면으로 돌아감)
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showRatingDialog() {

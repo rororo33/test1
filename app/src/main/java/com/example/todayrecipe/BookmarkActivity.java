@@ -30,6 +30,11 @@ public class BookmarkActivity extends AppCompatActivity implements RecipeAdapter
 
         setTitle("북마크한 레시피");
 
+        // 뒤로가기 버튼 활성화
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         db = FirebaseFirestore.getInstance();
         auth = FirebaseAuth.getInstance();
 
@@ -98,6 +103,15 @@ public class BookmarkActivity extends AppCompatActivity implements RecipeAdapter
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra("recipeId", recipe.getRecipeId());
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // 현재 액티비티 종료 (이전 화면으로 돌아감)
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     @Override

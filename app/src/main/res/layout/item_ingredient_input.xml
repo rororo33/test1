@@ -11,6 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="2"
         android:hint="재료명"
+        android:inputType="text"
         android:padding="10dp"
         android:background="@drawable/edit_text_background"
         android:layout_marginEnd="5dp" />
@@ -32,6 +33,7 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="단위"
+        android:inputType="text"
         android:padding="10dp"
         android:background="@drawable/edit_text_background"
         android:layout_marginEnd="5dp" />

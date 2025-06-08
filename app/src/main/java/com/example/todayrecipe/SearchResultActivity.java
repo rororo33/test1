@@ -33,6 +33,11 @@ public class SearchResultActivity extends AppCompatActivity implements RecipeAda
 
         setTitle("검색: " + searchQuery);
 
+        // 뒤로가기 버튼 활성화
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        }
+
         recipeManager = RecipeManager.getInstance();
         initViews();
         performSearch();
@@ -71,5 +76,14 @@ public class SearchResultActivity extends AppCompatActivity implements RecipeAda
         Intent intent = new Intent(this, RecipeDetailActivity.class);
         intent.putExtra("recipeId", recipe.getRecipeId());
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(android.view.MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            finish(); // 현재 액티비티 종료 (이전 화면으로 돌아감)
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

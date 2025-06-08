@@ -51,6 +51,7 @@ public class HomeActivity extends AppCompatActivity implements RecipeAdapter.OnR
         popularTitle = findViewById(R.id.popularTitle);
         fabAddRecipe = findViewById(R.id.fabAddRecipe);
         bottomNavigation = findViewById(R.id.bottomNavigation);
+
     }
 
     private void setupRecyclerViews() {

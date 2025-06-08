@@ -16,7 +16,9 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:background="@drawable/search_background"
-            app:queryHint="레시피를 검색하세요" />
+            app:queryHint="레시피를 검색하세요"
+            android:imeOptions="actionSearch"
+            android:inputType="text" />
 
         <ScrollView
             android:layout_width="match_parent"
